@@ -2,7 +2,7 @@
 
 namespace bariew\postAbstractModule;
 
-class Module extends \yii\base\Module
+class PostModule extends \yii\base\Module
 {
     /**
      * @var array for menu auto generation

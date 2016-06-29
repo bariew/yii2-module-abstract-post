@@ -2,7 +2,7 @@
 
 namespace bariew\postAbstractModule\controllers;
 
-use bariew\abstractAbstractModule\models\AbstractModel;
+use bariew\abstractModule\models\AbstractModel;
 use bariew\nodeTree\ARTreeMenuWidget;
 use bariew\postAbstractModule\actions\TreeCreateAction;
 use bariew\postAbstractModule\actions\TreeDeleteAction;

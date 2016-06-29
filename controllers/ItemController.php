@@ -7,7 +7,7 @@
 
 namespace bariew\postAbstractModule\controllers;
 
-use bariew\abstractAbstractModule\controllers\AbstractModelController;
+use bariew\abstractModule\controllers\AbstractModelController;
 use Yii;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;

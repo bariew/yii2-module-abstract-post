@@ -7,7 +7,7 @@
 
 namespace bariew\postAbstractModule\models;
 
-use bariew\abstractAbstractModule\models\AbstractModel;
+use bariew\abstractModule\models\AbstractModel;
 use bariew\yii2Tools\behaviors\RelationViaBehavior;
 use bariew\yii2Tools\validators\ListValidator;
 use Yii;

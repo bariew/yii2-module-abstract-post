@@ -2,7 +2,7 @@
 
 namespace bariew\postAbstractModule\models;
 
-use bariew\abstractAbstractModule\models\AbstractModel;
+use bariew\abstractModule\models\AbstractModel;
 use Yii;
 
 /**
