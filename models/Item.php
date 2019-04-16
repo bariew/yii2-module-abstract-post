@@ -14,6 +14,7 @@ use Yii;
 use yii\base\DynamicModel;
 use \bariew\yii2Tools\behaviors\FileBehavior;
 use yii\db\ActiveQuery;
+use yii\helpers\Url;
 
 /**
  * Description.
@@ -149,5 +150,91 @@ class Item extends AbstractModel
         $owner_id = $this->getAttribute('owner_id') ? : Yii::$app->user->id;
         return "@app/web/files/{$owner_id}/{$moduleName}/"
             . $this->formName() . '/' . $this->id; 
+    }
+
+    /**
+     * @param $mainTitle
+     * @param $mainDesc
+     * @param $mainLink
+     * @param $mainRssLink
+     * @return string
+     */
+    public static function rss($mainTitle, $mainDesc, $mainLink, $mainRssLink)
+    {
+        $dom = new \DOMDocument('1.0', 'utf-8');
+
+        $rss = $dom->createElement('rss');
+        $rss->setAttribute('version','2.0');
+        $rss->setAttribute('xmlns:dc', "http://purl.org/dc/elements/1.1/");
+        $rss->setAttribute('xmlns:sy', "http://purl.org/rss/1.0/modules/syndication/");
+        $rss->setAttribute('xmlns:admin', "http://webns.net/mvcb/");
+        $rss->setAttribute('xmlns:rdf', "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+        $rss->setAttribute('xmlns:content', "http://purl.org/rss/1.0/modules/content/");
+        $rss->setAttribute('xmlns:atom', "http://www.w3.org/2005/Atom");
+
+
+        $chanel = $dom->createElement( 'channel' );
+
+        $title = $dom->createElement('title');
+        $title->appendChild($dom->createTextNode($mainTitle));
+        $chanel->appendChild($title);
+
+        $link = $dom->createElement('link');
+        $link->appendChild($dom->createTextNode($mainLink));
+        $chanel->appendChild($link);
+
+        $description = $dom->createElement('description');
+        $description->appendChild($dom->createTextNode($mainDesc));
+        $chanel->appendChild($description);
+
+        $atomLink = $dom->createElement('atom:link');
+        $atomLink->setAttribute('href' , $mainRssLink);
+        $atomLink->setAttribute('rel' , 'self');
+        $atomLink->setAttribute('type', 'application/rss+xml');
+        $chanel->appendChild( $atomLink );
+
+//        $lastBuildDate = $dom->createElement( 'lastBuildDate' );
+//        $lastBuildDate->appendChild( $dom->createTextNode( static::formDate( $this->options['lastBuildDate'] ) ) );
+//        $chanel->appendChild( $lastBuildDate );
+
+        $pubDate = $dom->createElement('pubDate');
+        $pubDate->appendChild($dom->createTextNode(static::formDate(time())));
+        $chanel->appendChild($pubDate);
+        /** @var static $model */
+        foreach( static::find()->andWhere(['>', 'created_at', strtotime('-1week')])->all() as $model) {
+            $item = $dom->createElement('item');
+
+            $_pubDate = $dom->createElement('pubDate');
+            $_pubDate->appendChild($dom->createTextNode(static::formDate($model->created_at)));
+            $item->appendChild($_pubDate);
+
+            $_title = $dom->createElement('title');
+            $_title->appendChild($dom->createTextNode($model->title));
+            $item->appendChild($_title);
+
+            $_link = $dom->createElement('link');
+            $_link->appendChild($dom->createTextNode(Url::to(['default/view', 'id' => $model->id], true)));
+            $item->appendChild($_link);
+
+            $_description = $dom->createElement('description');
+            $_description->appendChild( $dom->createCDATASection($model->brief));
+            $item->appendChild($_description);
+
+            $chanel->appendChild($item);
+        }
+
+        $rss->appendChild($chanel);
+        $dom->appendChild($rss);
+
+        return $dom->saveXML();
+    }
+
+    /**
+     * @param $date
+     * @return false|string
+     */
+    protected static function formDate( $date )
+    {
+        return date(DATE_RSS, (is_int($date) ? $date : strtotime($date)));
     }
 }
