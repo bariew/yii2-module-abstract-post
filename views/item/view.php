@@ -32,8 +32,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'owner_id',
             'title',
-            'brief:ntext',
-            'content:ntext',
+            'brief:html',
+            'content:html',
             \bariew\yii2Tools\helpers\GridHelper::listFormat($model, 'status'),
             'created_at:datetime',
             [

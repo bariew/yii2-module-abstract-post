@@ -13,6 +13,7 @@ use bariew\yii2Tools\validators\ListValidator;
 use Yii;
 use yii\base\DynamicModel;
 use \bariew\yii2Tools\behaviors\FileBehavior;
+use yii\behaviors\BlameableBehavior;
 use yii\db\ActiveQuery;
 use yii\helpers\Url;
 
@@ -75,6 +76,11 @@ class Item extends AbstractModel
             'relationViaBehavior' => [
                 'class' => RelationViaBehavior::className(),
                 'relations' => ['categories']
+            ],
+            'ownerBehavior' => [
+                'class' => BlameableBehavior::class,
+                'createdByAttribute' => 'owner_id',
+                'updatedByAttribute' => false,
             ]
         ];
     }
